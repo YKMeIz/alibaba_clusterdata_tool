@@ -116,7 +116,7 @@ func (mud *machineUsageData) writeData(file string) {
 		mud.bar.Increment()
 		id++
 		dataLength--
-		if dataLength >= 0 {
+		if dataLength <= 0 {
 			break
 		}
 	}
@@ -129,6 +129,8 @@ func main() {
 	d := machineUsageData{
 		machines: make(map[string]map[int]int),
 	}
+
+	fmt.Println("initialize ...")
 	d.bar = pb.Full.Start(getLineCount(r))
 
 	fileScan(r, d.convert)
