@@ -1,7 +1,9 @@
 package internal
 
 import (
+	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -27,7 +29,22 @@ func FillNaN(s []int) []int {
 	return s
 }
 
-func LineCounter(r io.Reader) (int, error) {
+func GetLineCount(file string) int {
+	f, err := os.Open(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	c, err := lineCounter(f)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return c
+}
+
+func lineCounter(r io.Reader) (int, error) {
 	buf := make([]byte, 32*1024)
 	count := 0
 	lineSep := []byte{'\n'}
@@ -58,5 +75,28 @@ func WriteEntity(file *os.File, title string, values []int) {
 	err = file.Sync()
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func FileScan(file string, fn func(text string), hugeBuf bool) {
+	f, err := os.Open(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	fmt.Println("start scanning file:", file)
+
+	scanner := bufio.NewScanner(f)
+
+	if hugeBuf {
+		// adjust the capacity (max characters in line)
+		const maxCapacity = 4096 * 1024
+		buf := make([]byte, maxCapacity)
+		scanner.Buffer(buf, maxCapacity)
+	}
+
+	for scanner.Scan() {
+		fn(scanner.Text())
 	}
 }

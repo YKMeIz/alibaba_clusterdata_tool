@@ -1,7 +1,6 @@
-package main
+package convert
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/YKMeIz/alibaba_clusterdata_tool/internal"
 	"github.com/cheggaaa/pb/v3"
@@ -17,36 +16,6 @@ type machineUsageData struct {
 	timeline      []int
 	timeLastValue int
 	machines      map[string]map[int]int
-}
-
-func getLineCount(file string) int {
-	f, err := os.Open(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-
-	c, err := internal.LineCounter(f)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return c
-}
-
-func fileScan(file string, fn func(text string)) {
-	f, err := os.Open(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-
-	fmt.Println("start scanning file:", file)
-
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		fn(scanner.Text())
-	}
 }
 
 func (mud *machineUsageData) convert(text string) {
@@ -122,18 +91,15 @@ func (mud *machineUsageData) writeData(file string) {
 	}
 }
 
-func main() {
-	r := "../machine_usage.csv"
-	w := "../machine_ram11111.csv"
-
+func Run(src, dst string) {
 	d := machineUsageData{
 		machines: make(map[string]map[int]int),
 	}
 
 	fmt.Println("initialize ...")
-	d.bar = pb.Full.Start(getLineCount(r))
+	d.bar = pb.Full.Start(internal.GetLineCount(src))
 
-	fileScan(r, d.convert)
-	d.writeData(w)
+	internal.FileScan(src, d.convert, false)
+	d.writeData(dst)
 	d.bar.Finish()
 }
