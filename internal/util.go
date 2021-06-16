@@ -12,11 +12,25 @@ import (
 )
 
 func Stoi(s string) int {
+	if s == "" {
+		return -1
+	}
 	t, err := strconv.Atoi(s)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return t
+}
+
+func Stof64(data []string) []float64 {
+	var res []float64
+	for i:=0; i < len(data); i++ {
+		if data[i] == "-1" {
+			continue
+		}
+		res = append(res, float64(Stoi(data[i])))
+	}
+	return res
 }
 
 func FillNaN(s []int) []int {
