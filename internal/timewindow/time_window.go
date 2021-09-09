@@ -15,11 +15,11 @@ type timeWindow struct {
 	wg sync.WaitGroup
 
 	filter int
-	lock sync.Mutex
+	lock   sync.Mutex
 	// machine_id, position, missing_count
 	machines map[string][]int
 
-	dfs map[string][]regression.DataFeature
+	dfs         map[string][]regression.DataFeature
 	dfsTimeline []int
 }
 
@@ -59,8 +59,8 @@ func (tw *timeWindow) loopThrough(text string) {
 
 func missingCount(data []string) []int {
 	var (
-		m []string
-		mCount int
+		m        []string
+		mCount   int
 		position int
 	)
 
@@ -96,7 +96,7 @@ func Find(src, dst string, filter int) {
 	}
 	defer f.Close()
 
-	for k, v :=range tw.machines {
+	for k, v := range tw.machines {
 		internal.WriteEntity(f, k, v)
 	}
 }

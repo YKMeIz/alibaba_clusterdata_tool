@@ -50,7 +50,7 @@ func min(a, b int) int {
 	return b
 }
 
-func convertTo60secondTineWindow(arr[]string) []regression.DataFeature {
+func convertTo60secondTineWindow(arr []string) []regression.DataFeature {
 	var (
 		feats []regression.DataFeature
 	)
@@ -65,20 +65,18 @@ func convertTo60secondTineWindow(arr[]string) []regression.DataFeature {
 	return feats
 }
 
-
-
 func Convert(src, dst string, filter int) {
 	tw := timeWindow{
 		filter:   filter,
 		machines: make(map[string][]int),
-		dfs: make(map[string][]regression.DataFeature),
+		dfs:      make(map[string][]regression.DataFeature),
 	}
 	internal.FileScan(src, tw.loopThrough, true)
 	tw.wg.Wait()
 
-	filteredMachines  := make(map[string][]int)
+	filteredMachines := make(map[string][]int)
 
-	for k, v :=range tw.machines {
+	for k, v := range tw.machines {
 		//internal.WriteEntity(f, k, v)
 		if v[1] < 60 {
 			filteredMachines[k] = []int{}
@@ -101,7 +99,6 @@ func Convert(src, dst string, filter int) {
 	meanData := make(map[string][]float64)
 	sdData := make(map[string][]float64)
 
-
 	for k, v := range tw.dfs {
 		var vMin, vMax, vMean, vSD []float64
 
@@ -110,7 +107,7 @@ func Convert(src, dst string, filter int) {
 			vMax = append(vMax, f.Max)
 			vMean = append(vMean, f.Mean)
 			vSD = append(vSD, f.SD)
-				}
+		}
 
 		minData[k] = vMin
 		maxData[k] = vMax

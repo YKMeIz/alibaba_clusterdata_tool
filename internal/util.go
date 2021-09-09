@@ -24,7 +24,7 @@ func Stoi(s string) int {
 
 func Stof64(data []string) []float64 {
 	var res []float64
-	for i:=0; i < len(data); i++ {
+	for i := 0; i < len(data); i++ {
 		if data[i] == "-1" {
 			continue
 		}
